@@ -71,9 +71,9 @@ Eigen::VectorXd mkVector(const std::vector<double> &v)
 {
     Eigen::VectorXd vec(v.size());
 
-    for (auto value : v)
+    for (unsigned i = 0; i < v.size(); i++)
     {
-        vec << value;
+        vec(i) = v[i];
     }
 
     return vec;
