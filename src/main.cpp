@@ -9,6 +9,8 @@
 #include "MPC.h"
 #include "json.hpp"
 
+using namespace std;
+
 // for convenience
 using json = nlohmann::json;
 
@@ -123,6 +125,15 @@ int main() {
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
+          for (unsigned i = 0; i < ptsx.size(); i++)
+          {
+              double xt = ptsx[i] - px;
+              double yt = ptsy[i] - py;
+              double xrot = cos(-psi) * xt - sin(-psi) * yt;
+              double yrot = sin(-psi) * xt + cos(-psi) * yt;
+              next_x_vals.push_back(xrot);
+              next_y_vals.push_back(yrot);
+          }
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
@@ -132,10 +143,10 @@ int main() {
           std::cout << msg << std::endl;
           // Latency
           // The purpose is to mimic real driving conditions where
-          // the car does actuate the commands instantly.
+          // the car does not actuate the commands instantly.
           //
-          // Feel free to play around with this value but should be to drive
-          // around the track with 100ms latency.
+          // Feel free to play around with this value but you should be able
+          // to drive around the track with 100ms latency.
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
