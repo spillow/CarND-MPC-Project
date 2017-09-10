@@ -4,6 +4,18 @@
 #include <vector>
 #include "Eigen-3.3/Eigen/Core"
 
+struct Vars
+{
+    std::vector<double> xs;
+    std::vector<double> ys;
+    std::vector<double> psis;
+    std::vector<double> vs;
+    std::vector<double> ctes;
+    std::vector<double> epsis;
+    std::vector<double> deltas;
+    std::vector<double> as;
+};
+
 class MPC {
  public:
   MPC() {};
@@ -12,7 +24,7 @@ class MPC {
 
   // Solve the model given an initial state and polynomial coefficients.
   // Return the first actuations.
-  std::vector<double> Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs);
+  Vars Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs);
 };
 
 #endif /* MPC_H */
