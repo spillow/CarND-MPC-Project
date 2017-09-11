@@ -13,7 +13,7 @@ const double dt = 0.05;
 
 // Both the reference cross track and orientation errors are 0.
 // The reference velocity is set to 40 mph.
-double ref_v = 40;
+double ref_v = 60;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -54,8 +54,8 @@ class FG_eval {
 
       // Minimize the value gap between sequential actuations.
       for (size_t t = 0; t < N - 2; t++) {
-          fg[0] += 1000 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-          fg[0] += 1000 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+          fg[0] += 5000 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+          fg[0] += 5000 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
       }
 
       //
