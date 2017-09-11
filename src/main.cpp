@@ -141,6 +141,9 @@ int main() {
 
           auto vars = mpc.Solve(currState, coeffs);
 
+          // Grab the estimated delta and acceleration two
+          // time steps ahead (i.e., 100 ms in the future) to
+          // account for latency.
           double steer_value = -1.0 * (vars.deltas[2] / deg2rad(25.0));
           double throttle_value = vars.as[2];
 
