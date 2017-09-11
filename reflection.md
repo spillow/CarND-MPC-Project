@@ -35,7 +35,7 @@ Given that the issued actuator commands have a 100 ms latency, we must have a dt
 Without taking into account the 100 ms latency of commands, the car tends to oscillate and veer off course since, by the time the actuations
 actually occur, the car is in a different state from when it decided that those would be good actuations to perform.
 
-When new position, heading, and velocity information come in, we then simulate 0.75 seconds of motion.  If we want the car to perform some
-given actuations 100 ms in the future, we look at the simulated values for steering angle and acceleration at that time and issue them
-now so those actuations will actually happen 100 ms from now.
+When new position, heading, and velocity information come in, we use the kinematic model to predict our position 100 ms in the future and pass that as the
+initial state to our solver.  By issuing the solved for steering angle and acceleration now, it would then happen 100 ms later which is when we predicted
+it would be a good time to use those values.
 
