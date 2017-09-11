@@ -84,8 +84,10 @@ int main() {
 
   // MPC is initialized here!
   MPC mpc;
+  double delta = 0;
+  double a = 0;
 
-  h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  h.onMessage([&mpc,&delta,&a](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -131,21 +133,30 @@ int main() {
 
           auto coeffs = polyfit(xvals, yvals, 3);
 
-          double cte  = coeffs[0];
+          double latency = 0.1;
 
-          double psides = atan(coeffs[1]);
-          double epsi = -psides;
+          Eigen::VectorXd state(6);
 
-          Eigen::VectorXd currState(6);
-          currState << 0, 0, 0, v, cte, epsi;
+          double epsi = -atan(coeffs[1]);
 
-          auto vars = mpc.Solve(currState, coeffs);
+          double pred_px = v * latency;
+          double pred_py = 0;
+          double pred_psi = v * delta * latency / Lf;
+          double pred_v = v + a * latency;
+          double pred_cte = polyeval(coeffs, 0) + v * sin(epsi) * latency;
+          double pred_epsi = epsi + v * delta * latency / Lf;
+          state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
+
+          auto vars = mpc.Solve(state, coeffs);
 
           // Grab the estimated delta and acceleration two
           // time steps ahead (i.e., 100 ms in the future) to
           // account for latency.
-          double steer_value = -1.0 * (vars.deltas[2] / deg2rad(25.0));
-          double throttle_value = vars.as[2];
+          double steer_value = -1.0 * (vars.deltas[0] / deg2rad(25.0));
+          double throttle_value = vars.as[0];
+
+          delta = vars.deltas[0];
+          a = vars.as[0];
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
